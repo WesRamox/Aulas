@@ -1,13 +1,18 @@
-// const express = require('express')
-// const gamesController = require('./controllers/games-controller')
+const express = require('express')
+const gamesController = require('./controllers/games-controller')
 
-// const router = express.Router()
+const router = express.Router()
 
-// router.get('/', (req, res) => {
-// 	res.json({ message: 'Hello, world!' })
-// })
+router.get('/', (req, res) => {
+  res.json({ message: 'Hello, world!' })
+})
 
-// router.get('/games', gamesController.index)
-// router.get('/games/:id', gamesController.show)
+router.get('/games', gamesController.index)
+router.get('/games/:id', gamesController.show)
 
-// module.exports = router
+router.post('/games', gamesController.save)
+router.post('/games/:id/genres', gamesController.addGenre)
+
+router.post('/games/:id', gamesController.deleteGame)
+
+module.exports = router
