@@ -48,8 +48,32 @@ module.exports = {
   },
 
   // PUT /games/:id
+  update: (req, res) => {
+    const { id } = req.params
+    const { name, year } = req.body
 
-  // POST /games/:id
+    const gameIndex = games.findIndex(game => game.id === +id)
+
+    if(gameIndex === -1) {
+      res.status(404).json({ message: "Jogo não encontrado!" })
+    }
+
+    if (typeof name === 'string') {
+      games[gameIndex].name = name
+    } else {
+      res.status(404).json({ message: "valor inválido" })
+    }
+
+    if (typeof year === 'number') {
+      games[gameIndex].year = year
+    } else {
+      res.status(404).json({ message: "valor inválido" })
+    }
+
+    res.json(games[gameIndex])
+  },
+
+  // DELETE /games/:id
   deleteGame: (req, res) => {
     const { id } = req.params
   
@@ -57,7 +81,7 @@ module.exports = {
   
     if (gameIndex !== -1) {
       games.splice(gameIndex, 1)
-      res.json(games)
+      res.status(204).json({ message: "Jogo deletado com sucesso! "})
     } else {
       res.status(404).json({ message: "Jogo não encontrado!" })
     }
@@ -81,5 +105,24 @@ module.exports = {
     games[gameIndex].genres.push(genre)
 
     res.json(games[gameIndex])
+  },
+
+  // DELETE /games/:id/genres/:name
+  removeGenre: (req, res) => {
+    const { id, name } = req.params
+
+    const gameIndex = games.findIndex(game => game.id === +id)
+
+    if (gameIndex === -1) {
+      return res.status(404).json({ message: "Game not found! "})
+    }
+
+    if (typeof name !== 'string' || !games[gameIndex].genres.includes(name)) {
+      return res.status(400).json({ message: 'Invalid genre!' })
+    }
+
+    games[gameIndex].genres = games[gameIndex].genres.filter(genre => genre !== name)
+
+    res.status(204).end()
   }
 }
